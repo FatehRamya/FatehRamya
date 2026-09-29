@@ -1,0 +1,56 @@
+name: Update Contributions
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-contributions:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate contributions list
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          USERNAME: FatehRamya
+        run: |
+          echo "### 🐛 Issues I Reported" > contribs.md
+          echo "" >> contribs.md
+          echo "| Project | Issue | Status |" >> contribs.md
+          echo "|---------|-------|--------|" >> contribs.md
+          gh search issues --author=$USERNAME --limit 20 --json url,title,repository,state \
+            --template '{{range .}}| [{{.repository.name}}](https://github.com/{{.repository.nameWithOwner}}) | [{{.title}}]({{.url}}) | `{{.state}}` |
+          {{end}}' >> contribs.md
+
+          echo "" >> contribs.md
+          echo "### 🔀 Pull Requests" >> contribs.md
+          echo "" >> contribs.md
+          echo "| Project | PR | Status |" >> contribs.md
+          echo "|---------|-----|--------|" >> contribs.md
+          gh search prs --author=$USERNAME --limit 20 --json url,title,repository,state \
+            --template '{{range .}}| [{{.repository.name}}](https://github.com/{{.repository.nameWithOwner}}) | [{{.title}}]({{.url}}) | `{{.state}}` |
+          {{end}}' >> contribs.md
+
+      - name: Update README
+        run: |
+          START="<!-- CONTRIBS:START -->"
+          END="<!-- CONTRIBS:END -->"
+          awk -v start="$START" -v end="$END" '
+            $0 ~ start { print; while ((getline line < "contribs.md") > 0) print line; skip=1; next }
+            $0 ~ end { skip=0 }
+            !skip { print }
+          ' README.md > README.new
+          mv README.new README.md
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git diff --staged --quiet || git commit -m "🤖 Update contributions"
+          git push
