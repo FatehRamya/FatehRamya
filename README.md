@@ -7,6 +7,7 @@
 
 | Project | Issue | Status |
 |---------|-------|--------|
+| [supertonic-android](https://github.com/DevGitPit/supertonic-android) | [Feature Request: Multi-Voice Segments, Configurable Pauses, and Per-Segment Speed Control](https://github.com/DevGitPit/supertonic-android/issues/60) | `open` |
 | [qalculate-android](https://github.com/jherkenhoff/qalculate-android) | [Problems with the writing direction and keyboard](https://github.com/jherkenhoff/qalculate-android/issues/169) | `open` |
 | [wmkeyboard](https://github.com/wasi-master/wmkeyboard) | [Bug: Keyboard is flipped when system language is Arabic](https://github.com/wasi-master/wmkeyboard/issues/336) | `closed` |
 | [Grove](https://github.com/resurrectdev1/Grove) | [Problems in restore from grove backup in poco pad and redmi 15c](https://github.com/resurrectdev1/Grove/issues/35) | `closed` |
